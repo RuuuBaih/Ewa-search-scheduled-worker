@@ -5,8 +5,8 @@ task :console do
   sh 'pry -r ./init.rb'
 end
 
-USERNAME = 'soumyaray'
-IMAGE = 'codepraise-clone_report_worker'
+USERNAME = 'ruuubaih2020soa'
+IMAGE = 'search_worker'
 VERSION = '0.1.0'
 
 desc 'Build Docker image'
@@ -66,11 +66,11 @@ namespace :heroku do
   end
 end
 
-namespace :queue do
+namespace :search_queues do
   task :config do
-    require_relative 'config/environment.rb' # load config info
     require 'aws-sdk-sqs'
-    @worker = CodePraise::CloneReportWorker
+    require_relative 'config/environment' # load config info
+    @worker = Ewa::SearchWorker
     @config = @worker.config
 
     @sqs = Aws::SQS::Client.new(
@@ -83,11 +83,11 @@ namespace :queue do
   desc 'Create SQS queue for Shoryuken'
   task :create => :config do
     puts "Environment: #{ENV['WORKER_ENV'] || 'development'}"
-    @sqs.create_queue(queue_name: @config.REPORT_QUEUE)
+    @sqs.create_queue(queue_name: @config.SEARCH_QUEUE)
 
-    q_url = @sqs.get_queue_url(queue_name: @config.REPORT_QUEUE).queue_url
+    q_url = @sqs.get_queue_url(queue_name: @config.SEARCH_QUEUE).queue_url
     puts 'Queue created:'
-    puts "  Name: #{@config.REPORT_QUEUE}"
+    puts "  Name: #{@config.SEARCH_QUEUE}"
     puts "  Region: #{@config.AWS_REGION}"
     puts "  URL: #{q_url}"
   rescue StandardError => error
@@ -95,12 +95,60 @@ namespace :queue do
     puts error.backtrace
   end
 
-  desc 'Purge messages in SQS queue for Shoryuken'
+  desc 'Purge messages in SQS queue for worker'
   task :purge => :config do
-    q_url = @sqs.get_queue_url(queue_name: @config.REPORT_QUEUE).queue_url
+    q_url = @sqs.get_queue_url(queue_name: @api.config.CLICK_QUEUE).queue_url
     @sqs.purge_queue(queue_url: q_url)
     puts "Queue #{queue_name} purged"
-  rescue StandardError => error
-    puts "Error purging queue: #{error}"
+  rescue StandardError => e
+    puts "Error purging queue: #{e}"
+  end
+end
+
+namespace :click_worker do
+  namespace :run do
+    desc 'Run the background clicking worker in development mode'
+    task :dev => :config do
+      sh 'RACK_ENV=development bundle exec shoryuken -r ./workers/click_worker.rb -C ./workers/shoryuken_dev.yml'
+    end
+
+    desc 'Run the background clicking worker in testing mode'
+    task :test => :config do
+      sh 'RACK_ENV=test bundle exec shoryuken -r ./workers/click_worker.rb -C ./workers/shoryuken_test.yml'
+    end
+
+    desc 'Run the background clicking worker in production mode'
+    task :production => :config do
+      sh 'RACK_ENV=production bundle exec shoryuken -r ./workers/click_worker.rb -C ./workers/shoryuken.yml'
+    end
+  end
+end
+
+namespace :db do
+  task :config do
+    require 'sequel'
+    require_relative 'config/environment' # load config info
+
+    def worker
+      Ewa::SearchWorker
+    end
+  end
+
+  desc 'Run migrations'
+  task migrate: :config do
+    Sequel.extension :migration
+    puts "Migrating #{worker.environment} database to latest"
+    Sequel::Migrator.run(worker.DB, 'worker/infrastructure/database/migrations')
+  end
+
+  desc 'Delete dev or test database file'
+  task drop: :config do
+    if worker.environment == :production
+      puts 'Cannot remove production database!'
+      return
+    end
+
+    FileUtils.rm(Ewa::SearchkWorker.config.DB_FILENAME)
+    puts "Deleted #{Ewa::SearchWorker.config.DB_FILENAME}"
   end
 end
