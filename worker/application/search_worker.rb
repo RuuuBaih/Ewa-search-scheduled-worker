@@ -27,7 +27,7 @@ module Ewa
           # If one restaurant has been clicked upon 5 times then needs an update
           towns_name = key.to_s
           searchs = val.to_i
-          searchs.each do |update_times|
+          searchs.times do |update_times|
             do_db_update(towns_name)
           end
           puts "\tTown #{towns_name} need to be updated #{searchs} times, update has done."
@@ -42,8 +42,8 @@ module Ewa
       town_entity = Repository::Towns.find_by_name(town)
       new_page = town_entity.page + 1
       town_name = town_entity.town_name
-      restaurants = RestaurantMapper.new(token, cx, town_name, new_page).restaurant_obj_lists
-      repo_entities = restaurants.map do |restaurant_entity|
+      restaurants = Restaurant::RestaurantMapper.new(@config.GMAP_TOKEN, @config.CX, town_name, new_page).restaurant_obj_lists
+      restaurants.map do |restaurant_entity|
         Repository::For.entity(restaurant_entity).create(restaurant_entity)
       end
       # update new page and restaurant search nums to db town table
