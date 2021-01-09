@@ -58,8 +58,7 @@ module Ewa
       @updated_towns = Hash.new(0)
       @queue.poll do |queue|
         puts queue.inspect
-        puts queue.class
-        # count how many times restaurants get clicks
+        # count how many times restaurants get search
         town_name = queue
         @updated_towns[town_name] = @updated_towns[town_name] + 1
       end
