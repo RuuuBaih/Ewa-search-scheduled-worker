@@ -56,6 +56,7 @@ module Ewa
 
       # default hash value is 0
       @updated_towns = Hash.new(0)
+      #binding.irb
       @queue.poll do |queue|
         puts queue.inspect
         # count how many times restaurants get search
