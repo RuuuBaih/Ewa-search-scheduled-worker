@@ -1,8 +1,12 @@
-FROM soumyaray/ruby-http:2.7.2
+FROM ruuubaih2020soa/ruby-http:2.7.1
 
 WORKDIR /worker
 
 COPY / .
+
+RUN apk update && apk upgrade
+RUN apk add sqlite sqlite-dev
+RUN apk add postgresql-client postgresql-dev
 
 RUN bundle install
 
@@ -12,16 +16,16 @@ CMD rake worker
 # Build local image with:
 #   rake docker:build
 # or:
-#   docker build --rm --force-rm -t soumyaray/codepraise-clone_notifier:0.1.0 .
+#   docker build --rm --force-rm -t ruuubaih2020soa/search_worker:0.1.0 .
 #
 # Run and test local container with:
 #   rake docker:run
 # or:
-#   docker run -e --rm -it -v $(pwd)/config:/worker/config -w /worker soumyaray/codepraise-clone_notifier:0.1.0 ruby worker/clone_notifier.rb
+#   docker run -e --rm -it -v $(pwd)/config:/worker/config -w /worker ruuubaih2020soa/search_worker:0.1.0 ruby worker/search_worker.rb
 
 # REMOTE:
 # Make sure Heroku app exists:
-#   heroku create codepraise-scheduled_worker
+#   heroku create search-scheduled_worker
 #
 # Build and push to Heroku container registry with:
 #   heroku container:push web
@@ -30,4 +34,4 @@ CMD rake worker
 # Run and test remote container:
 #   heroku run worker
 # or:
-#   heroku run ruby worker/clone_notifier.rb
+#   heroku run ruby worker/search_worker.rb

@@ -5,7 +5,7 @@ task :console do
   sh 'pry -r ./init.rb'
 end
 
-USERNAME = 'ruuubaih'
+USERNAME = 'ruuubaih2020soa'
 IMAGE = 'ewa-search_worker'
 VERSION = '0.1.0'
 
