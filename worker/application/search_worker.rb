@@ -48,7 +48,6 @@ module Ewa
       end
       # update new page and restaurant search nums to db town table
       Repository::Towns.update_page(town_name)
-      Repository::Towns.update_search(town_name)
     end
 
     def update_towns
