@@ -7,7 +7,7 @@ module Ewa
     # Client Library for Google Custom Search API, use a restaurant name to search for photos
     class CustomSearchApi
       # exclude images from instagram and fb (where picture urls will expire very soon)
-      EXCLUDE_TERMS = "cdninstagram.com%20fbsbx.com"
+      EXCLUDE_TERMS = 'cdninstagram.com%20fbsbx.com'
       GMAP_API_PATH = "https://customsearch.googleapis.com/customsearch/v1?fileType=jpg&searchType=image&imgType=photo&excludeTerms=#{EXCLUDE_TERMS}"
 
       def initialize(token, rest, cx)

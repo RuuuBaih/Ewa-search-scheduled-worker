@@ -21,9 +21,9 @@ module Ewa
     configure :production do
       # Set DATABASE_URL environment variable on production platform
       use Rack::Cache,
-        verbose: true,
-        metastore: config.REDISCLOUD_URL + '/0/metastore',
-        entitystore: config.REDISCLOUD_URL + '/0/entitystore'
+          verbose: true,
+          metastore: "#{config.REDISCLOUD_URL}/0/metastore",
+          entitystore: "#{config.REDISCLOUD_URL}/0/entitystore"
     end
 
     configure do
