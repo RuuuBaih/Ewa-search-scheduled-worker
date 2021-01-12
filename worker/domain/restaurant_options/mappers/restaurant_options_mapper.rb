@@ -22,12 +22,12 @@ module Ewa
         end
       end
 
-      # Get total numbers 
+      # Get total numbers
       def total
         if @selected_entities.length.zero?
           raise StandardError
         else
-          @selected_entities.count 
+          @selected_entities.count
         end
       end
     end

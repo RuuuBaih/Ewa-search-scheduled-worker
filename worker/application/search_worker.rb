@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../init.rb'
+require_relative '../../init'
 require_relative '../domain/restaurants/init'
 require 'aws-sdk-sqs'
 
@@ -55,7 +55,6 @@ module Ewa
 
       # default hash value is 0
       @updated_towns = Hash.new(0)
-      #binding.irb
       @queue.poll do |queue|
         puts queue.inspect
         # count how many times restaurants get search
@@ -66,5 +65,3 @@ module Ewa
     end
   end
 end
-
-

@@ -6,12 +6,11 @@ ruby '2.7.2'
 # APPLICATION LAYER
 # Web Application
 gem 'econfig', '~> 2.1'
-gem 'roda', '~> 3.8'
 gem 'pry', '~> 0.11.3'
+gem 'roda', '~> 3.8'
 
 # Messaging
 gem 'aws-sdk-sqs'
-
 
 # DOMAIN LAYER
 # Validation
@@ -39,4 +38,3 @@ end
 group :production do
   gem 'pg', '~> 1.2'
 end
-

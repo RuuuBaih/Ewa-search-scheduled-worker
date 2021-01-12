@@ -42,7 +42,7 @@ module Ewa
       end
 
       def self.db_update(new_entities, restaurant_id)
-        old_entities = Database::ReviewOrm.where(restaurant_id: restaurant_id).all 
+        old_entities = Database::ReviewOrm.where(restaurant_id: restaurant_id).all
         old_entities.each_with_index do |db_entity, idx|
           hash_entity = new_entities[idx].to_attr_hash
           hash_entity[:restaurant_id] = restaurant_id
