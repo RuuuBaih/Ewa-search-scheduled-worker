@@ -27,7 +27,7 @@ module Ewa
           # If one restaurant has been clicked upon 5 times then needs an update
           towns_name = key.to_s
           searchs = val.to_i
-          searchs.times do |update_times|
+          searchs.times do
             do_db_update(towns_name)
           end
           puts "\tTown #{towns_name} need to be updated #{searchs} times, update has done."
